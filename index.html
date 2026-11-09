@@ -1,717 +1,212 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Typing Software | Improve Your Typing Skills</title>
-
+    <title>TypePulse — Free Typing Speed Test</title>
     <meta name="description"
-        content="Professional typing software for improving typing speed, accuracy and keyboard skills.">
+        content="A distraction-free typing test with live speed, accuracy and personal records. Pick 15, 30, 60 or 120 seconds and find your flow.">
+    <meta name="theme-color" content="#08090c" id="theme-color">
 
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('typepulse.theme');
+                if (theme !== 'light' && theme !== 'dark') {
+                    theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+                        ? 'light'
+                        : 'dark';
+                }
+                document.documentElement.dataset.theme = theme;
+            } catch (error) {
+                document.documentElement.dataset.theme = 'dark';
+            }
+        })();
+    </script>
+
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c8f45a'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='monospace' font-weight='700' font-size='38' fill='%230a0b10'%3ET%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <a class="skip-link" href="practice.html">Skip to typing practice</a>
 
-    <!-- ================= NAVBAR ================= -->
-    <header class="navbar">
-        <div class="container nav-container">
+    <div class="bg-scene" aria-hidden="true">
+        <div class="scene-glow scene-glow-a"></div>
+        <div class="scene-glow scene-glow-b"></div>
+        <div class="scene-ring scene-ring-a"></div>
+        <div class="scene-ring scene-ring-b"></div>
+        <div class="scene-floor"></div>
 
-            <a href="#home" class="logo">
-                <span class="logo-icon">⌨</span>
-                <span>Antriksh Typing <span class="logo-highlight">Software</span></span>
+        <div class="scene-keys">
+            <span class="scene-key scene-key-1">T</span>
+            <span class="scene-key scene-key-2">P</span>
+            <span class="scene-key scene-key-3">⌘</span>
+            <span class="scene-key scene-key-4">↵</span>
+            <span class="scene-key scene-key-5">Y</span>
+            <span class="scene-key scene-key-6">E</span>
+        </div>
+    </div>
+
+    <header class="site-header" id="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="#top">
+                <span class="logo-mark" aria-hidden="true">
+                    <span class="logo-t">T</span>
+                    <span class="logo-bar"></span>
+                </span>
+                <span class="brand-text">Type<span class="brand-accent">Pulse</span></span>
             </a>
 
-            <nav class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#features">Features</a>
-                <a href="#about">About</a>
-                <a href="#download">Download</a>
-                <a href="#contact">Contact</a>
+            <nav class="nav" aria-label="Main navigation">
+                <a href="practice.html" target="_blank" rel="noopener noreferrer">Practice</a>
+                <a href="#how">How it works</a>
             </nav>
 
-            <a href="#download" class="nav-download">
-                Download
-            </a>
+            <div class="header-actions">
+                <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to light theme"
+                    aria-pressed="false" title="Toggle theme">
+                    <svg class="icon icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
+                    </svg>
+                    <svg class="icon icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                        aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+                    </svg>
+                </button>
 
+                <a class="btn btn-primary btn-small header-cta" href="practice.html" target="_blank" rel="noopener noreferrer">Start typing</a>
+            </div>
         </div>
     </header>
 
-
-    <!-- ================= HERO ================= -->
-    <main>
-
-        <section class="hero" id="home">
-
-            <div class="container hero-content">
-
-                <div class="hero-text">
-
-                    <div class="version-badge">
-                        ● Latest Version Available
-                    </div>
-
-                    <h1>
-                        Improve Your
-                        <span>Typing Skills</span>
-                        Faster
-                    </h1>
-
-                    <p>
-                        A simple and powerful desktop typing software designed
-                        to help you improve your typing speed, accuracy and
-                        keyboard skills through structured lessons and practice.
-                    </p>
-
-                    <div class="hero-buttons">
-
-                        <a href="#download" class="primary-btn">
-                            <span>↓</span>
-                            Download for Windows
-                        </a>
-
-                        <a href="#features" class="secondary-btn">
-                            Explore Features
-                        </a>
-
-                    </div>
-
-                    <div class="hero-info">
-                        <span>✓ Windows 10 / 11</span>
-                        <span>✓ Easy Installation</span>
-                        <span>✓ Beginner Friendly</span>
-                    </div>
-
-                </div>
-
-
-                <!-- APP PREVIEW -->
-                <div class="app-preview">
-
-                    <div class="preview-window">
-
-                        <div class="window-top">
-
-                            <div class="window-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-
-                            <div class="window-title">
-                                Typing Software
-                            </div>
-
-                        </div>
-
-                        <div class="preview-body">
-
-                            <div class="preview-sidebar">
-
-                                <div class="side-logo">⌨</div>
-
-                                <div class="side-item active">
-                                    🏠
-                                    <span>Home</span>
-                                </div>
-
-                                <div class="side-item">
-                                    📚
-                                    <span>Lessons</span>
-                                </div>
-
-                                <div class="side-item">
-                                    ⌨
-                                    <span>Practice</span>
-                                </div>
-
-                                <div class="side-item">
-                                    🎮
-                                    <span>Games</span>
-                                </div>
-
-                            </div>
-
-
-                            <div class="preview-content">
-
-                                <p class="small-text">
-                                    WELCOME BACK
-                                </p>
-
-                                <h3>
-                                    Ready to improve<br>
-                                    your typing?
-                                </h3>
-
-                                <div class="stats">
-
-                                    <div>
-                                        <strong>45</strong>
-                                        <small>WPM</small>
-                                    </div>
-
-                                    <div>
-                                        <strong>96%</strong>
-                                        <small>Accuracy</small>
-                                    </div>
-
-                                    <div>
-                                        <strong>12</strong>
-                                        <small>Lessons</small>
-                                    </div>
-
-                                </div>
-
-
-                                <div class="keyboard">
-
-                                    <div class="key-row">
-                                        <span>Q</span>
-                                        <span>W</span>
-                                        <span>E</span>
-                                        <span>R</span>
-                                        <span>T</span>
-                                        <span>Y</span>
-                                        <span>U</span>
-                                        <span>I</span>
-                                        <span>O</span>
-                                        <span>P</span>
-                                    </div>
-
-                                    <div class="key-row">
-                                        <span>A</span>
-                                        <span>S</span>
-                                        <span>D</span>
-                                        <span>F</span>
-                                        <span>G</span>
-                                        <span>H</span>
-                                        <span>J</span>
-                                        <span>K</span>
-                                        <span>L</span>
-                                    </div>
-
-                                    <div class="key-row">
-                                        <span>Z</span>
-                                        <span>X</span>
-                                        <span>C</span>
-                                        <span>V</span>
-                                        <span>B</span>
-                                        <span>N</span>
-                                        <span>M</span>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+    <main id="top">
+        <section class="hero container">
+            <div class="hero-badge">
+                <span class="pulse-dot" aria-hidden="true"></span>
+                Free typing test · No sign-up
             </div>
 
-        </section>
-
-
-        <!-- ================= FEATURES ================= -->
-        <section class="features-section" id="features">
-
-            <div class="container">
-
-                <div class="section-heading">
-
-                    <p>POWERFUL FEATURES</p>
-
-                    <h2>
-                        Everything You Need to Improve
-                    </h2>
-
-                    <span>
-                        Practice regularly and build better typing skills
-                        with useful learning tools.
-                    </span>
-
-                </div>
-
-
-                <div class="features-grid">
-
-                    <div class="feature-card">
-
-                        <div class="feature-icon">📚</div>
-
-                        <h3>
-                            Typing Lessons
-                        </h3>
-
-                        <p>
-                            Learn typing step by step with structured
-                            lessons designed for beginners and learners.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <div class="feature-icon">⌨️</div>
-
-                        <h3>
-                            Virtual Keyboard
-                        </h3>
-
-                        <p>
-                            Practice with an interactive keyboard that
-                            helps you understand key positions.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <div class="feature-icon">⚡</div>
-
-                        <h3>
-                            Speed Practice
-                        </h3>
-
-                        <p>
-                            Improve your typing speed through regular
-                            practice and timed typing sessions.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <div class="feature-icon">🎯</div>
-
-                        <h3>
-                            Accuracy Tracking
-                        </h3>
-
-                        <p>
-                            Monitor your typing accuracy and identify
-                            mistakes so you can improve.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <div class="feature-icon">🎮</div>
-
-                        <h3>
-                            Typing Games
-                        </h3>
-
-                        <p>
-                            Make learning more interesting with
-                            fun typing games and challenges.
-                        </p>
-
-                    </div>
-
-
-                    <div class="feature-card">
-
-                        <div class="feature-icon">📊</div>
-
-                        <h3>
-                            Results & Progress
-                        </h3>
-
-                        <p>
-                            View your typing results and track your
-                            progress as your skills improve.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= ABOUT ================= -->
-        <section class="about-section" id="about">
-
-            <div class="container about-content">
-
-                <div class="about-text">
-
-                    <p class="section-label">
-                        ABOUT THE SOFTWARE
-                    </p>
-
-                    <h2>
-                        Learn Typing.
-                        Practice Better.
-                        Improve Faster.
-                    </h2>
-
-                    <p>
-                        Typing Software is designed to provide a simple
-                        learning environment for students, beginners and
-                        anyone who wants to improve their keyboard typing skills.
-                    </p>
-
-                    <p>
-                        From basic lessons to typing practice, speed tests
-                        and interactive activities, everything is designed
-                        to make typing practice easier and more effective.
-                    </p>
-
-                    <div class="about-points">
-
-                        <div>
-                            ✓ Simple and easy-to-use interface
-                        </div>
-
-                        <div>
-                            ✓ Suitable for beginners
-                        </div>
-
-                        <div>
-                            ✓ Practice anytime on your computer
-                        </div>
-
-                        <div>
-                            ✓ Track typing speed and accuracy
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="about-box">
-
-                    <div class="about-box-icon">
-                        ⌨
-                    </div>
-
-                    <h3>
-                        Build Better
-                        Typing Skills
-                    </h3>
-
-                    <p>
-                        Practice a little every day and
-                        improve your typing confidence.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- ================= DOWNLOAD ================= -->
-        <section class="download-section" id="download">
-
-            <div class="container">
-
-                <div class="download-card">
-
-                    <div class="download-content">
-
-                        <p class="section-label">
-                            GET STARTED TODAY
-                        </p>
-
-                        <h2>
-                            Download Typing Software
-                        </h2>
-
-                        <p>
-                            Install the desktop application on your
-                            Windows computer and start improving your
-                            typing skills.
-                        </p>
-
-
-                        <div class="download-details">
-
-                            <div>
-                                <strong>Latest Version</strong>
-                                <span>1.0.0</span>
-                            </div>
-
-                            <div>
-                                <strong>Platform</strong>
-                                <span>Windows 10 / 11</span>
-                            </div>
-
-                            <div>
-                                <strong>File</strong>
-                                <span>Windows Setup (.exe)</span>
-                            </div>
-
-                        </div>
-                        <!--
-                            IMPORTANT:
-                            Later replace the local file path
-                            with your actual online setup file URL.
-                        -->
-
-                        <a href="https://github.com/vy503180-gif/typing_website/releases/download/v1.0.0/AntrikshTypingMaster-Setup-1.0.0-win.exe"
-                            class="download-btn">
-
-                            <span>↓</span>
-                            Download for Windows
-
-                        </a>
-
-                        <p class="download-note">
-                            Free to download • Easy installation
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= INSTALLATION ================= -->
-        <section class="installation-section">
-
-            <div class="container">
-
-                <div class="section-heading">
-
-                    <p>
-                        GET STARTED
-                    </p>
-
-                    <h2>
-                        How to Install
-                    </h2>
-
-                </div>
-
-
-                <div class="steps">
-
-                    <div class="step">
-
-                        <div class="step-number">
-                            01
-                        </div>
-
-                        <h3>
-                            Download
-                        </h3>
-                        <p>
-                            Click the Download for Windows button
-                            and download the setup file.
-                        </p>
-
-                    </div>
-                    <div class="step">
-
-                        <div class="step-number">
-                            02
-                        </div>
-
-                        <h3>
-                            Install
-                        </h3>
-
-                        <p>
-                            Open the downloaded setup file and
-                            follow the installation instructions.
-                        </p>
-
-                    </div>
-
-
-                    <div class="step">
-
-                        <div class="step-number">
-                            03
-                        </div>
-
-                        <h3>
-                            Start Typing
-                        </h3>
-
-                        <p>
-                            Launch the software and start your
-                            typing lessons and practice.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= CONTACT / DEVELOPER ================= -->
-        <section class="contact-section" id="contact">
-
-            <div class="container">
-
-                <div class="section-heading">
-
-                    <p>
-                        DEVELOPER DETAILS
-                    </p>
-
-                    <h2>
-                        About the Developer
-                    </h2>
-
-                    <span>
-                        Get in touch for more information about
-                        the Typing Software.
-                    </span>
-
-                </div>
-
-
-                <div class="contact-card">
-
-                    <div class="contact-icon">
-                        👨‍💻
-                    </div>
-
-                    <div class="contact-info">
-
-                        <div class="contact-item">
-
-                            <span class="contact-label">
-                                Name
-                            </span>
-
-                            <strong>
-                                Vicky Yadav
-                            </strong>
-
-                        </div>
-
-
-                        <div class="contact-item">
-
-                            <span class="contact-label">
-                                Address
-                            </span>
-
-                            <strong>
-                                Antriksh Computer Training Center,
-                                Karha Road, Bus Stand,
-                                M. Bad Gohna, Mau
-                            </strong>
-
-                        </div>
-
-
-                        <div class="contact-item">
-
-                            <span class="contact-label">
-                                Email Address
-                            </span>
-
-                            <a href="mailto:vy503180@gmail.com">
-                                vy503180@gmail.com
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- ================= FOOTER ================= -->
-    <footer>
-
-        <div class="container footer-content">
-
-            <div class="footer-brand">
-
-                <div class="logo">
-
-                    <span class="logo-icon">
-                        ⌨
-                    </span>
-
-                    <span>
-                        Typing<span class="logo-highlight">Software</span>
-                    </span>
-
-                </div>
-
-                <p>
-                    Improve your typing speed, accuracy
-                    and keyboard skills.
-                </p>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="#home">
-                    Home
-                </a>
-
-                <a href="#features">
-                    Features
-                </a>
-
-                <a href="#about">
-                    About
-                </a>
-
-                <a href="#download">
-                    Download
-                </a>
-
-                <a href="#contact">
-                    Contact
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <p>
-                © 2026 Typing Software. All Rights Reserved.
+            <h1>Find your <span class="accent-word">flow.</span><br>Type faster.</h1>
+
+            <p class="hero-sub">
+                A distraction-free typing test with live speed and accuracy.
+                Pick a timed run, a quick row, a full paragraph, or a fresh quote from the web.
             </p>
 
-        </div>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="practice.html" target="_blank" rel="noopener noreferrer">
+                    Start typing
+                    <svg class="icon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 12h14M13 6l6 6-6 6"></path>
+                    </svg>
+                </a>
+            </div>
 
+            <div class="hero-meta">
+                <span>Timed, row &amp; paragraph modes</span>
+                <span>Online quote practice</span>
+                <span>Live WPM &amp; accuracy</span>
+            </div>
+        </section>
+
+        <section class="how container" id="how">
+            <div class="section-head centered">
+                <p class="eyebrow">How it works</p>
+                <h2>Three steps to a cleaner keystroke.</h2>
+            </div>
+
+            <div class="steps">
+                <article>
+                    <span class="step-num">01</span>
+                    <h3>Pick your pace</h3>
+                    <p>Choose a 15, 30, 60 or 120 second test. Sprint for speed or settle in and build stamina.</p>
+                </article>
+                <article>
+                    <span class="step-num">02</span>
+                    <h3>Type naturally</h3>
+                    <p>The timer starts on your first keystroke. Correct letters light up, mistakes are marked in red.</p>
+                </article>
+                <article>
+                    <span class="step-num">03</span>
+                    <h3>Read the numbers</h3>
+                    <p>Get your WPM, raw speed, accuracy and character count the moment the clock runs out.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <a class="brand" href="#top">
+                <span class="logo-mark logo-mark-small" aria-hidden="true">
+                    <span class="logo-t">T</span>
+                    <span class="logo-bar"></span>
+                </span>
+                <span class="brand-text">Type<span class="brand-accent">Pulse</span></span>
+            </a>
+
+            <p>Made for people who like the sound of keys. No accounts, no ads.</p>
+
+            <div class="footer-links">
+                <a href="practice.html" target="_blank" rel="noopener noreferrer">Practice</a>
+                <a href="#how">How it works</a>
+            </div>
+        </div>
     </footer>
 
+    <script>
+        /* =========================================================
+           Home page — theme only
+           ========================================================= */
+        (() => {
+            'use strict';
 
+            const THEME_KEY = 'typepulse.theme';
+
+            const el = {
+                themeToggle: document.getElementById('theme-toggle'),
+                themeColor: document.getElementById('theme-color'),
+            };
+
+            function currentTheme() {
+                return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+            }
+
+            function applyTheme(theme, persist = true) {
+                document.documentElement.dataset.theme = theme;
+                el.themeToggle.setAttribute('aria-pressed', String(theme === 'light'));
+                el.themeToggle.setAttribute(
+                    'aria-label',
+                    theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
+                );
+                if (el.themeColor) {
+                    el.themeColor.setAttribute('content', theme === 'light' ? '#f4f1e8' : '#08090c');
+                }
+                if (persist) {
+                    try {
+                        window.localStorage.setItem(THEME_KEY, theme);
+                    } catch (error) {
+                        /* Ignore storage failures. */
+                    }
+                }
+            }
+
+            el.themeToggle.addEventListener('click', () => {
+                applyTheme(currentTheme() === 'light' ? 'dark' : 'light');
+            });
+
+            applyTheme(currentTheme(), false);
+        })();
+    </script>
 </body>
 
 </html>
-```
