@@ -98,7 +98,6 @@
         customWordBtn: document.querySelector('button[data-words="custom"]'),
         themeToggle: document.getElementById('theme-toggle'),
         themeColor: document.getElementById('theme-color'),
-        speedGraph: document.getElementById('speed-graph'),
     };
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -128,7 +127,6 @@
         correctKeys: 0,
         onlineLabel: '',
         onlineRequest: 0,
-        speedSamples: [], // {time, wpm} samples for the graph
     };
 
     let store = loadStore();
@@ -138,7 +136,7 @@
        ----------------------------------------------------- */
 
     function loadStore() {
-        const fresh = { records: {}, tests: 0, accuracyTotal: 0, wpmTotal: 0 };
+        const fresh = { records: {}, tests: 0, accuracyTotal: 0, wpmTotal: 0, lastMode: 'timed', lastDuration: 30, customWordCount: 10 };
 
         try {
             const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -158,6 +156,10 @@
             fresh.tests = Math.max(0, Math.floor(Number(parsed.tests) || 0));
             fresh.accuracyTotal = Math.max(0, Number(parsed.accuracyTotal) || 0);
             fresh.wpmTotal = Math.max(0, Number(parsed.wpmTotal) || 0);
+
+            if (MODES.includes(parsed.lastMode)) fresh.lastMode = parsed.lastMode;
+            if (DURATIONS.includes(parsed.lastDuration)) fresh.lastDuration = parsed.lastDuration;
+            if (Number.isFinite(parsed.customWordCount) && parsed.customWordCount > 0) fresh.customWordCount = Math.floor(parsed.customWordCount);
         } catch (error) {
             /* Storage can be unavailable in private or file:// contexts. */
         }
@@ -361,7 +363,6 @@
         state.running = true;
         state.startedAt = performance.now();
         state.elapsed = 0;
-        state.speedSamples = [];
         el.card.classList.add('is-running');
         el.card.classList.remove('is-finished');
         el.status.textContent = 'Keep going — Esc restarts with fresh text.';
@@ -375,15 +376,6 @@
         if (!state.running) return;
 
         const elapsed = (performance.now() - state.startedAt) / 1000;
-
-        // Record a speed sample once per second for the graph
-        const sampleSecond = Math.floor(elapsed);
-        const lastSample = state.speedSamples[state.speedSamples.length - 1];
-        if (!lastSample || lastSample.time !== sampleSecond) {
-            const correct = countCorrectChars();
-            const wpm = elapsed > 0.5 ? Math.round((correct / 5) / (elapsed / 60)) : 0;
-            state.speedSamples.push({ time: sampleSecond, wpm });
-        }
 
         if (state.mode === 'timed') {
             const remaining = Math.max(0, state.duration - elapsed);
@@ -567,111 +559,8 @@
         el.resultMode.textContent = modeLabel();
 
         el.results.hidden = false;
-        drawGraph();
+        document.body.classList.add('results-open');
         el.againBtn.focus({ preventScroll: true });
-    }
-
-    function drawGraph() {
-        const canvas = el.speedGraph;
-        if (!canvas) return;
-
-        const ctx = canvas.getContext('2d');
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-
-        const rootStyle = getComputedStyle(document.documentElement);
-        const accentText = rootStyle.getPropertyValue('--accent-text').trim() || '#d3fa6a';
-        const muted = rootStyle.getPropertyValue('--muted').trim() || '#9298a3';
-
-        const width = rect.width;
-        const height = rect.height;
-        const samples = state.speedSamples;
-
-        ctx.clearRect(0, 0, width, height);
-
-        if (samples.length === 0) {
-            ctx.fillStyle = muted;
-            ctx.font = '14px var(--font-sans)';
-            ctx.textAlign = 'center';
-            ctx.fillText('No speed data', width / 2, height / 2);
-            return;
-        }
-
-        // Find max WPM for scaling
-        const maxWpm = Math.max(...samples.map(s => s.wpm), 10);
-        const maxTime = Math.max(...samples.map(s => s.time), 1);
-
-        const padLeft = 40;
-        const padRight = 20;
-        const padTop = 20;
-        const padBottom = 30;
-        const plotWidth = width - padLeft - padRight;
-        const plotHeight = height - padTop - padBottom;
-
-        // Draw grid lines
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-        ctx.lineWidth = 1;
-        for (let i = 0; i <= 4; i++) {
-            const y = padTop + (plotHeight / 4) * i;
-            ctx.beginPath();
-            ctx.moveTo(padLeft, y);
-            ctx.lineTo(width - padRight, y);
-            ctx.stroke();
-        }
-
-        // Draw Y axis labels
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.font = '11px var(--font-sans)';
-        ctx.textAlign = 'right';
-        for (let i = 0; i <= 4; i++) {
-            const val = Math.round((maxWpm / 4) * i);
-            const y = padTop + (plotHeight / 4) * i;
-            ctx.fillText(val + ' WPM', padLeft - 8, y + 4);
-        }
-
-        // Draw X axis labels
-        ctx.textAlign = 'center';
-        for (let i = 0; i <= maxTime; i += Math.max(1, Math.floor(maxTime / 5))) {
-            const x = padLeft + (plotWidth / maxTime) * i;
-            ctx.fillText(i + 's', x, height - 8);
-        }
-
-        // Draw the line
-        ctx.beginPath();
-        ctx.lineWidth = 2.5;
-        ctx.strokeStyle = accentText;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-
-        samples.forEach((s, i) => {
-            const x = padLeft + (plotWidth / maxTime) * s.time;
-            const y = padTop + plotHeight - (s.wpm / maxWpm) * plotHeight;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        });
-        ctx.stroke();
-
-        // Draw area fill gradient
-        ctx.globalAlpha = 0.15;
-        ctx.fillStyle = accentText;
-        ctx.lineTo(width - padRight, height - padBottom);
-        ctx.lineTo(padLeft, height - padBottom);
-        ctx.closePath();
-        ctx.fill();
-        ctx.globalAlpha = 1;
-
-        // Draw points
-        ctx.fillStyle = accentText;
-        samples.forEach((s) => {
-            const x = padLeft + (plotWidth / maxTime) * s.time;
-            const y = padTop + plotHeight - (s.wpm / maxWpm) * plotHeight;
-            ctx.beginPath();
-            ctx.arc(x, y, 3, 0, Math.PI * 2);
-            ctx.fill();
-        });
     }
 
     /* -----------------------------------------------------
@@ -721,6 +610,9 @@
             button.setAttribute('aria-pressed', String(Number(button.dataset.duration) === duration));
         });
 
+        store.lastDuration = duration;
+        saveStore();
+
         restart({ focus: options.focus !== false });
     }
 
@@ -737,6 +629,9 @@
         el.secondsWrap.hidden = true;
         el.wordCountGroup.hidden = mode !== 'word';
         el.wordCountWrap.hidden = true;
+
+        store.lastMode = mode;
+        saveStore();
 
         restart({ focus: options.focus !== false });
     }
@@ -917,6 +812,8 @@
         const val = Math.max(1, Math.min(500, Number(el.wordCountInput.value) || 1));
         el.wordCountInput.value = String(val);
         state.customWordCount = val;
+        store.customWordCount = val;
+        saveStore();
         restart({ focus: !coarsePointer });
     });
 
@@ -956,10 +853,12 @@
     }
 
     el.againBtn.addEventListener('click', () => {
+        document.body.classList.remove('results-open');
         restart({ focus: true });
     });
 
     el.closeBtn.addEventListener('click', () => {
+        document.body.classList.remove('results-open');
         restart({ focus: false });
     });
 
@@ -967,6 +866,7 @@
         if (!el.results.hidden) {
             if (event.key === 'Escape') {
                 event.preventDefault();
+                document.body.classList.remove('results-open');
                 restart({ focus: false });
                 return;
             }
@@ -1046,7 +946,34 @@
 
     applyTheme(currentTheme(), false);
     el.header.classList.toggle('is-scrolled', window.scrollY > 8);
-    setMode('timed');
+
+    // Restore saved mode and duration from localStorage
+    if (store.lastDuration && DURATIONS.includes(store.lastDuration)) {
+        state.duration = store.lastDuration;
+        state.customSeconds = store.lastDuration;
+        el.customSecondsInput.value = String(store.lastDuration);
+        el.durationButtons.forEach((button) => {
+            button.setAttribute('aria-pressed', String(Number(button.dataset.duration) === store.lastDuration));
+        });
+    }
+
+    // Restore saved custom word count
+    if (store.customWordCount) {
+        state.customWordCount = store.customWordCount;
+        el.wordCountInput.value = String(store.customWordCount);
+        el.wordCountButtons.forEach((button) => {
+            button.setAttribute('aria-pressed', String(button.dataset.words === String(store.customWordCount)));
+        });
+        if (store.customWordCount === 10 || store.customWordCount === 20 || store.customWordCount === 30) {
+            el.wordCountWrap.hidden = true;
+            el.customWordBtn.setAttribute('aria-pressed', 'false');
+        } else {
+            el.wordCountWrap.hidden = false;
+            el.customWordBtn.setAttribute('aria-pressed', 'true');
+        }
+    }
+
+    setMode(store.lastMode || 'timed');
     syncFocusUI();
     updateCaret();
 
